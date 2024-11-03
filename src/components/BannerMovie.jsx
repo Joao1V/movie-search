@@ -13,8 +13,9 @@ const BannerMovie = (props) => {
 
             <img loading="lazy"
                  className={"rounded-2"}
-                 style={{height:220, flex:1}}
-                 src={`https://media.themoviedb.org/t/p/w94_and_h141_bestv2/${image}`}
+                 style={{height:220,maxHeight:220, width:150, maxWidth:150, objectFit:"contain"}}
+                 src={`https://image.tmdb.org/t/p/w185${image}`}
+                 // src={`https://media.themoviedb.org/t/p/w94_and_h141_bestv2${image}`}
                  // srcset={`https://media.themoviedb.org/t/p/w94_and_h141_bestv2/${image} 1x, https://media.themoviedb.org/t/p/w188_and_h282_bestv2/${image} 2x`}
                  alt="banner"
                  onLoad={() => {
