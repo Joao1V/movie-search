@@ -30,15 +30,25 @@ const ModalMovieDetails = (props) => {
                         {/*/>*/}
                         <div>
                             <h3>{item.title}</h3>
-                            <div className="d-flex">
-                                Lançamento: <p className={"ms-1"}>{item.release_date}</p>
-                            </div>
+                            <p>
+                                Lançamento: {item.release_date}
+                            </p>
                             <p>
                                 {item.description}
                             </p>
                             <div>
-                                <span>Gênero: {item.genre.length === 0 ? "-" : <h5 className={"mb-0"}>
-                                    <strong>{item.genre.map(category => category.name).join(', ')}</strong></h5>}</span>
+                                <p className={"mb-1"}>Gênero:</p>
+                                {item.genre.length === 0 ? "-" :
+                                    <div className={"d-flex gap-2 mb-0"}>
+                                        {item.genre.map(category => (
+                                            <h5 className={"bg-light border rounded-2 bg-dark-subtle p-2"}>
+                                                <strong>
+                                                    {category.name}
+                                                </strong>
+                                            </h5>
+                                        ))}
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
