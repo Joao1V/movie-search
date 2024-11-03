@@ -19,6 +19,9 @@ const ModalGenerateTable = (props) => {
 
     return (
         <Modal show={show} onHide={onHide} centered>
+            <Modal.Header closeButton>
+                <Modal.Title>Buscar filmes</Modal.Title>
+            </Modal.Header>
             <Modal.Body>
                 <textarea
                     rows={15}
