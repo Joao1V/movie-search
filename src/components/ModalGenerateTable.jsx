@@ -1,16 +1,13 @@
 import {Modal} from "react-bootstrap";
 import {useState} from "react";
+import {generateObjectListTable} from "../utils/functions.js";
 
 const ModalGenerateTable = (props) => {
     const { show, onHide, onListMovies } = props;
     const [movieText, setMovieText] = useState('');
 
     const generateTable = () => {
-        const movieArray = movieText
-            .split('\n')
-            .map(line => line.trim())
-            .filter(line => line !== '')
-            .map(movieName => ({ name: movieName, checked: false, updated_at: null })); // Formato desejado
+        const movieArray = generateObjectListTable(movieText)
 
         onListMovies(movieArray);
         onHide();

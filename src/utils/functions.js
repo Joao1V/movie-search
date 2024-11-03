@@ -94,3 +94,10 @@ export const copyToClipboard = (text) => {
     }
 }
 
+export const generateObjectListTable = (text) => {
+    return text
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line !== '')
+        .map(movieName => ({title: movieName, checked: false, updated_at: null}))
+};

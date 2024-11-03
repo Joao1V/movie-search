@@ -8,8 +8,10 @@ import ModalMovieDetails from "./components/ModalMovieDetails.jsx";
 import moment from "moment";
 import {getStorage, setStorage} from "./utils/storage.js";
 import {Form} from "react-bootstrap";
-import {copyToClipboard} from "./utils/functions.js";
+import {copyToClipboard, generateObjectListTable} from "./utils/functions.js";
 import {ToastContainer} from "react-toastify";
+import {useDebounce} from "./hooks/useDebounce.ts";
+import _ from "lodash";
 
 const STORAGE_MOVIES = "movies";
 const STORAGE_MOVIES_DONE = "movies_done";
@@ -54,6 +56,7 @@ const MovieSearch = () => {
 
                 setModalMovieDetails(true);
                 setMovieDetails([...aux]);
+                return aux
 
             } else {
                 alert(`Filme não encontrado: ${movieName}`);
@@ -111,6 +114,24 @@ const MovieSearch = () => {
         }
     };
 
+    const { handleChange } = useDebounce({
+        onSuccess: async (text) => {
+            if (text.value.length > 0) {
+                const res = await getMovieDetail(text.value);
+
+                if (res.length > 0) {
+                    const result = generateObjectListTable(res[0].title);
+                    const index = _.findIndex(movies, { title: res[0].title });
+
+                    if (index === -1) {
+                        setMovies([...movies, ...result]);
+                    }
+                }
+
+            }
+        }
+    })
+
     useEffect(() => {
         fetchGenres();
         const cachedMovies = getStorage(STORAGE_MOVIES);
@@ -123,7 +144,18 @@ const MovieSearch = () => {
             <ToastContainer />
 
             <h2 className={"text-center"}>Buscador de filmes</h2>
-            <div className={"d-flex justify-content-end"}>
+            <div className={"d-flex justify-content-between mb-3"}>
+                <div>
+                    <input type="text"
+                           placeholder={"Encontrar filme"}
+                           onChange={(e) => {
+                               handleChange({
+                                   label:"query",
+                                   value: e.target.value,
+                               })
+                           }}
+                           className={"form-control h-100"}/>
+                </div>
                 <button onClick={() => setShow(true)}>Gerar tabela</button>
             </div>
             <ModalGenerateTable show={show}
@@ -151,7 +183,7 @@ const MovieSearch = () => {
                         </thead>
                         <tbody>
                         {movies.map((item, index) => {
-                            const movieName = item.name
+                            const movieName = item.title
 
                             return (
                                 <tr key={index} className={"align-middle"}>

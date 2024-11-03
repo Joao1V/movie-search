@@ -21,6 +21,9 @@ const BannerMovie = (props) => {
                  onLoad={() => {
                      setLoading(false);
                  }}
+                 onError={() => {
+                     setLoading(false);
+                 }}
             />
                 
             {/*<img loading="lazy"*/}
