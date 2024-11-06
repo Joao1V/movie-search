@@ -119,7 +119,7 @@ const MovieSearch = () => {
                 const res = await getMovieDetail(text.value);
 
                 if (res.length > 0) {
-                    const result = generateObjectListTable(res[0].title);
+                    const result = generateObjectListTable(text.value);
                     const index = _.findIndex(movies, { title: res[0].title });
 
                     if (index === -1) {
