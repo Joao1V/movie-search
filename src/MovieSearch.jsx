@@ -155,7 +155,7 @@ const MovieSearch = () => {
                            }}
                            className={"form-control h-100"}/>
                 </div>
-                <button onClick={() => setShow(true)}>Gerar tabela</button>
+                {/*<button onClick={() => setShow(true)}>Gerar tabela</button>*/}
             </div>
             <ModalGenerateTable show={show}
                                 onHide={() => setShow(false)}
