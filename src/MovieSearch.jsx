@@ -51,7 +51,7 @@ const MovieSearch = () => {
                             details.genre.push(found);
                         })
                     }
-                    aux.push(details)
+                    aux.unshift(details)
                 })
 
                 setModalMovieDetails(true);
@@ -87,10 +87,9 @@ const MovieSearch = () => {
             if (index !== -1) {
                 cachedMoviesDone.splice(index, 1);
             } else {
-                cachedMoviesDone.push(position);
+                cachedMoviesDone.unshift(position);
             }
 
-            console.log(cachedMoviesDone)
             setStorage(STORAGE_MOVIES_DONE, cachedMoviesDone);
         } else {
             setStorage(STORAGE_MOVIES_DONE, [{...aux[index]}]);
@@ -124,7 +123,7 @@ const MovieSearch = () => {
                     const index = _.findIndex(movies, { title: res[0].title });
 
                     if (index === -1) {
-                        setMovies([...movies, ...result]);
+                        setMovies([...result,...movies]);
                     }
                 }
 
