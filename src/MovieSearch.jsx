@@ -12,6 +12,7 @@ import {copyToClipboard, generateObjectListTable} from "./utils/functions.js";
 import {ToastContainer} from "react-toastify";
 import {useDebounce} from "./hooks/useDebounce.ts";
 import _ from "lodash";
+import PaginationControls from "./components/PaginationControls.jsx";
 
 const STORAGE_MOVIES = "movies";
 const STORAGE_MOVIES_DONE = "movies_done";
@@ -23,6 +24,11 @@ const MovieSearch = () => {
 
     const [show, setShow] = useState(false);
     const [modalMovieDetails, setModalMovieDetails] = useState(false);
+
+    const [currentPage, setCurrentPage] = useState(0);
+    const [currentMovies, setCurrentMovies] = useState([])
+
+    const handlePageClick = (data) => setCurrentPage(data.selected);
 
     const getMovieDetail = async (movieName) => {
         try {
@@ -138,85 +144,109 @@ const MovieSearch = () => {
             setMovies(cachedMovies)
         }
     }, []);
+
+
     return (
-        <div className={"container mt-5"}>
-            <ToastContainer />
-
-            <h2 className={"text-center"}>Buscador de filmes</h2>
-            <div className={"d-flex justify-content-between mb-3"}>
-                <div>
-                    <input type="text"
-                           placeholder={"Encontrar filme"}
-                           onChange={(e) => {
-                               handleChange({
-                                   label:"query",
-                                   value: e.target.value,
-                               })
-                           }}
-                           className={"form-control h-100"}/>
+        <div>
+            <div className={"border-bottom"}>
+                <div className="container-fluid">
+                    <h4 className={"pt-4 pb-3"}>Buscador de filmes</h4>
                 </div>
-                {/*<button onClick={() => setShow(true)}>Gerar tabela</button>*/}
             </div>
-            <ModalGenerateTable show={show}
-                                onHide={() => setShow(false)}
-                                onListMovies={(e) => {
-                                    setStorage(STORAGE_MOVIES, e)
-                                    setMovies(e)
-                                }}
-            />
-            <ModalMovieDetails show={modalMovieDetails}
-                               data={movieDetails}
-                               onHide={() => setModalMovieDetails(false)}
-            />
+            <div className={"container mt-5"}>
+                <ToastContainer/>
 
-            {movies.length > 0 && (
-                <div>
-                    <h3>Filmes</h3>
-                    <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Nome do Filme</th>
-                            <th className={"text-center"} style={{ width: "10%" }}>Ação</th>
-                            <th style={{ width: "2%" }}>Concluído</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {movies.map((item, index) => {
-                            const movieName = item.title
-
-                            return (
-                                <tr key={index} className={"align-middle"}>
-                                    <td>
-                                        <div className={"d-flex align-items-center gap-2 "}>
-                                            <span className={item.checked ? "text-decoration-line-through text-success" : ""}>{movieName}</span>
-                                            <i className="bi bi-copy" onClick={() => copyToClipboard(movieName)} style={{cursor:"pointer"}}></i>
-                                        </div>
-                                    </td>
-                                    <td className={""}>
-                                        <div className={"d-flex align-items-center gap-2 justify-content-center"}>
-                                            <button onClick={() => getMovieDetail(movieName)}>
-                                                <i className={"bi bi-search"}></i>
-                                            </button>
-                                        </div>
-                                    </td>
-
-                                    <td className={"text-center"}>
-                                        <Form.Check className={"check-30"}
-                                                    checked={item.checked}
-                                                    onChange={() => {
-                                                        handleChecked(index)
-                                                    }}
-                                                    aria-label={`option ${index}`}
-                                        />
-                                    </td>
-
-                                </tr>
-                            );
-                        })}
-                        </tbody>
-                    </Table>
+                <div className={"d-flex justify-content-between mb-4"}>
+                    <div>
+                        <input type="text"
+                               placeholder={"Encontrar filme"}
+                               onChange={(e) => {
+                                   handleChange({
+                                       label: "query",
+                                       value: e.target.value,
+                                   })
+                               }}
+                               style={{height: 45, minWidth: 280}}
+                               className={"form-control"}/>
+                    </div>
+                    {/*<button onClick={() => setShow(true)}>Gerar tabela</button>*/}
                 </div>
-            )}
+                <ModalGenerateTable show={show}
+                                    onHide={() => setShow(false)}
+                                    onListMovies={(e) => {
+                                        setStorage(STORAGE_MOVIES, e)
+                                        setMovies(e)
+                                    }}
+                />
+                <ModalMovieDetails show={modalMovieDetails}
+                                   data={movieDetails}
+                                   onHide={() => setModalMovieDetails(false)}
+                />
+
+                {movies.length > 0 && (
+                    <div>
+                        <Table striped bordered hover>
+                            <thead>
+                            <tr>
+                                <th>Nome do Filme</th>
+                                <th className={"text-center"} style={{width: "10%"}}>Ação</th>
+                                <th style={{width: "2%"}}>Concluído</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {currentMovies.map((item, index) => {
+                                const movieName = item.title
+
+                                return (
+                                    <tr key={index} className={"align-middle"}>
+                                        <td>
+                                            <div className={"d-flex align-items-center gap-2 "}>
+                                                <span
+                                                    className={item.checked ? "text-decoration-line-through text-success" : ""}>{movieName}</span>
+                                                <i className="bi bi-copy" onClick={() => copyToClipboard(movieName)}
+                                                   style={{cursor: "pointer"}}></i>
+                                            </div>
+                                        </td>
+                                        <td className={""}>
+                                            <div className={"d-flex align-items-center gap-2 justify-content-center"}>
+                                                <button onClick={() => getMovieDetail(movieName)}>
+                                                    <i className={"bi bi-search"}></i>
+                                                </button>
+                                            </div>
+                                        </td>
+
+                                        <td className={"text-center"}>
+                                            <Form.Check className={"check-30"}
+                                                        checked={item.checked}
+                                                        onChange={() => {
+                                                            handleChecked(index)
+                                                        }}
+                                                        aria-label={`option ${index}`}
+                                            />
+                                        </td>
+
+                                    </tr>
+                                );
+                            })}
+                            </tbody>
+                        </Table>
+
+                        {movies.length > 0 &&
+                            <PaginationControls
+                                totalItems={movies.length}
+                                itemsPerPage={10}
+                                currentPage={currentPage}
+                                items={movies}
+                                onPageChange={handlePageClick}
+                                onItemsChange={setCurrentMovies}
+                            />
+                        }
+
+
+
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
