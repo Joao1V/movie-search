@@ -13,6 +13,7 @@ import {ToastContainer} from "react-toastify";
 import {useDebounce} from "./hooks/useDebounce.ts";
 import _ from "lodash";
 import PaginationControls from "./components/PaginationControls.jsx";
+import CardStatistics from "./components/CardStatistics.jsx";
 
 const STORAGE_MOVIES = "movies";
 const STORAGE_MOVIES_DONE = "movies_done";
@@ -151,6 +152,42 @@ const MovieSearch = () => {
             <div className={"border-bottom"}>
                 <div className="container-fluid">
                     <h4 className={"pt-4 pb-3"}>Buscador de filmes</h4>
+                </div>
+            </div>
+            <div className={"container mt-5"}>
+                <div className={"row row-cols-4"}>
+                    <div className="col">
+                        <CardStatistics
+                            title="Mês"
+                            range={30}
+                            icon={<i className={"bi bi-calendar"}></i>}
+                            data={movies}
+                        />
+                    </div>
+                    <div className="col">
+                        <CardStatistics
+                            title="Semana"
+                            range={7}
+                            icon={<i className={"bi bi-calendar"}></i>}
+                            data={movies}
+                        />
+                    </div>
+                    <div className="col">
+                        <CardStatistics
+                            title="Ontem"
+                            range={1}
+                            icon={<i className={"bi bi-calendar"}></i>}
+                            data={movies}
+                        />
+                    </div>
+                    <div className="col">
+                        <CardStatistics
+                            title="Hoje"
+                            range={0}
+                            icon={<i className={"bi bi-calendar"}></i>}
+                            data={movies}
+                        />
+                    </div>
                 </div>
             </div>
             <div className={"container mt-5"}>
